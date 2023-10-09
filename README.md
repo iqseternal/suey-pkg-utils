@@ -4,9 +4,9 @@ npm config set registry https://registry.npmjs.org
 
 安装
 
-npm install @suey/packages --save
+npm install @suey/pkg-utils --save
 
-pnpm install @suey/packages --save
+pnpm install @suey/pkg-utils --save
 
 ```typescript
 import { createApiRequest } from '@suey/pkg-utils';
