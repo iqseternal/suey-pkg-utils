@@ -5,6 +5,7 @@ npm config set registry https://registry.npmjs.org
 安装
 
 npm install @suey/packages --save
+
 pnpm install @suey/packages --save
 
 ```typescript
