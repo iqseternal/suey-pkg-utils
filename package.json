@@ -1,6 +1,6 @@
 {
   "name": "@suey/pkg-utils",
-  "version": "0.0.3",
+  "version": "0.0.7",
   "author": "suey",
   "license": "ISC",
   "description": "Compatible universal functions.",
@@ -41,5 +41,8 @@
   "repository": {
     "type": "git",
     "url": "git@github.com:iqseternal/suey-pkg-utils.git"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
   }
 }
