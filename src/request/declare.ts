@@ -1,5 +1,5 @@
 
-import axios, { AxiosResponse, AxiosPromise } from 'axios';
+import axios, { AxiosResponse, AxiosPromise, AxiosError } from 'axios';
 
 import type { AxiosInstance, AxiosRequestConfig, AxiosInterceptorManager, InternalAxiosRequestConfig, Axios } from 'axios';
 
@@ -26,10 +26,32 @@ export type RequestConfig<T, D = {}> = AxiosRequestConfig<D> & {
 export interface Interceptors<K, V> {
   onFulfilled?: (config: K) => V | Promise<V>;
 
-  onRejected?: (config: K) => V | Promise<V>;
+  onRejected?: <T extends AxiosError>(config: T) => V | Promise<V>;
 }
 
 export type R<K, V = {}> =
   K extends { data: infer S }
     ? Omit<K, 'data'> & { data: V }
     : K & { data: V };
+
+export type ApiPromiseLike<Success, Failure = Error> = Omit<Promise<Success>, 'catch' | 'then'> & {
+  /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+  then<TResult1 = Success, TResult2 = Failure>(
+
+    onfulfilled?: ((value: Success) => TResult1 | ApiPromiseLike<TResult1, TResult2>) | undefined | null,
+    onrejected?: ((reason: any) => TResult2 | ApiPromiseLike<TResult1, TResult2>) | undefined | null
+
+  ): ApiPromiseLike<TResult1, TResult2>;
+
+  /**
+   * Attaches a callback for only the rejection of the Promise.
+   * @param onrejected The callback to execute when the Promise is rejected.
+   * @returns A Promise for the completion of the callback.
+   */
+  catch<TResult = Failure>(onrejected?: ((reason: Failure) => TResult | ApiPromiseLike<TResult, TResult>) | undefined | null): ApiPromiseLike<TResult, TResult>;
+};

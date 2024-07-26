@@ -61,13 +61,13 @@ export const isDate: IsType<Date> = isType('Date');
  * @param {any} target 目标对象
  * @returns {boolean} 返回目标是否有意义, 即不为 Undefined, 也不为 Null
  */
-export const isDef = <T>(target: T): target is (Exclude<T, null | undefined>) => !isNull(target) && !isUndefined(target);
+export const isDef = <T>(target: T): target is (Exclude<T, undefined>) => !isNull(target) && !isUndefined(target);
 
 /**
  * @param {any} target 目标对象
  * @returns {boolean} 返回目标是否没有意义, 即为 Undefined, 或者为 Null
  */
-export const isUnDef = <T>(target: T): target is (null | undefined) => isNull(target) || isUndefined(target);
+export const isUnDef = <T>(target: T): target is undefined => isNull(target) || isUndefined(target);
 /**
  * @param {any} target 目标对象
  * @returns {boolean} 返回目标是否是一个 Promise 对象, 是否包含 .then 和 .catch 方法
