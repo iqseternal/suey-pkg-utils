@@ -34,18 +34,41 @@ export type R<K, V = {}> =
     ? Omit<K, 'data'> & { data: V }
     : K & { data: V };
 
-export type ApiPromiseLike<Success, Failure = Error> = Omit<Promise<Success>, 'catch' | 'then'> & {
+// export type ApiPromiseLike<Success, Failure = Error> = Omit<Promise<Success>, 'catch' | 'then'> & {
+//   /**
+//      * Attaches callbacks for the resolution and/or rejection of the Promise.
+//      * @param onfulfilled The callback to execute when the Promise is resolved.
+//      * @param onrejected The callback to execute when the Promise is rejected.
+//      * @returns A Promise for the completion of which ever callback is executed.
+//      */
+//   then<TResult1 = Success, TResult2 = Failure>(
+
+//     onfulfilled?: ((value: Success) => TResult1 | ApiPromiseLike<TResult1, TResult2>) | undefined | null,
+//     onrejected?: ((reason: any) => TResult2 | ApiPromiseLike<TResult1, TResult2>) | undefined | null
+
+//   ): ApiPromiseLike<TResult1, TResult2>;
+
+//   /**
+//    * Attaches a callback for only the rejection of the Promise.
+//    * @param onrejected The callback to execute when the Promise is rejected.
+//    * @returns A Promise for the completion of the callback.
+//    */
+//   catch<TResult = Failure>(onrejected?: ((reason: Failure) => TResult | ApiPromiseLike<TResult, TResult>) | undefined | null): ApiPromiseLike<TResult, TResult>;
+// };
+
+
+export interface ApiPromiseLike<Success, Failure = Error> extends Promise<Success> {
+
   /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-  then<TResult1 = Success, TResult2 = Failure>(
+   * Attaches callbacks for the resolution and/or rejection of the Promise.
+   * @param onfulfilled The callback to execute when the Promise is resolved.
+   * @param onrejected The callback to execute when the Promise is rejected.
+   * @returns A Promise for the completion of which ever callback is executed.
+   */
+  then<TResult1, TResult2 = Failure>(
+    onfulfilled?: ((value: Success) => any) | undefined | null,
 
-    onfulfilled?: ((value: Success) => TResult1 | ApiPromiseLike<TResult1, TResult2>) | undefined | null,
     onrejected?: ((reason: any) => TResult2 | ApiPromiseLike<TResult1, TResult2>) | undefined | null
-
   ): ApiPromiseLike<TResult1, TResult2>;
 
   /**
@@ -53,5 +76,15 @@ export type ApiPromiseLike<Success, Failure = Error> = Omit<Promise<Success>, 'c
    * @param onrejected The callback to execute when the Promise is rejected.
    * @returns A Promise for the completion of the callback.
    */
-  catch<TResult = Failure>(onrejected?: ((reason: Failure) => TResult | ApiPromiseLike<TResult, TResult>) | undefined | null): ApiPromiseLike<TResult, TResult>;
-};
+  catch<TResult = Failure>(
+    onrejected?: ((reason: Failure) => TResult | ApiPromiseLike<TResult, TResult>) | undefined | null
+  ): ApiPromiseLike<TResult, TResult>;
+}
+
+export type ApiPromiseLikeTypeBuilder<SuccessResponse, FailResponse = {}> = ApiPromiseLike<SuccessResponse, FailResponse>;
+export type ApiPromiseResultTypeBuilder<SuccessResponseTemplate, FailResponseTemplate, SuccessResponse, FailResponse> = ApiPromiseLikeTypeBuilder<
+  R<SuccessResponseTemplate, SuccessResponse>,
+  R<FailResponseTemplate, FailResponse>
+>;
+
+

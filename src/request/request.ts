@@ -33,8 +33,8 @@ export default function createRequest<
 
   sendPre?: Interceptors<RequestConfig<RequestConfigPayload>, void>,
   respAft?: Interceptors<
-    AxiosResponse<R<SuccessResponseTemplate>>,
-    R<SuccessResponseTemplate> | AxiosResponse<R<SuccessResponseTemplate>>
+    AxiosResponse<R<SuccessResponseTemplate>> | AxiosResponse<R<FailResponseTemplate>>,
+    R<SuccessResponseTemplate> | R<FailResponseTemplate> | AxiosResponse<R<SuccessResponseTemplate>> |  AxiosResponse<R<FailResponseTemplate>>
   >
 ): RequestFunction<RequestConfigPayload, SuccessResponseTemplate, FailResponseTemplate> {
 
@@ -86,8 +86,8 @@ export const createApiRequest = <RequestConfigPayload, SuccessResponseTemplate =
   config?: RequestConfig<RequestConfigPayload>,
   sendPre?: Interceptors<RequestConfig<RequestConfigPayload>, void>,
   respAft?: Interceptors<
-    AxiosResponse<R<SuccessResponseTemplate>>,
-    R<SuccessResponseTemplate> | AxiosResponse<R<SuccessResponseTemplate>>
+    AxiosResponse<R<SuccessResponseTemplate>> | AxiosResponse<R<FailResponseTemplate>>,
+    R<SuccessResponseTemplate> | R<FailResponseTemplate> | AxiosResponse<R<SuccessResponseTemplate>> |  AxiosResponse<R<FailResponseTemplate>>
   >
 ) => {
   const request = createRequest<RequestConfigPayload, SuccessResponseTemplate, FailResponseTemplate>(baseURL, config, sendPre, respAft);
