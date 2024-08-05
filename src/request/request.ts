@@ -47,24 +47,24 @@ export default function createRequest<
   });
 
   instance.interceptors.request.use(
-    (config: InternalAxiosRequestConfig & RequestConfig<RequestConfigPayload>) => {
-      if (sendPre && sendPre.onFulfilled) sendPre.onFulfilled(config);
+    async (config: InternalAxiosRequestConfig & RequestConfig<RequestConfigPayload>) => {
+      if (sendPre && sendPre.onFulfilled) await sendPre.onFulfilled(config);
 
       if (config.hConfig) delete config.hConfig;
       return config;
     },
-    (error: AxiosError<R<FailResponseTemplate>, RequestConfig<RequestConfigPayload>>) => {
-      if (sendPre && sendPre.onRejected) sendPre.onRejected(error);
+    async (error: AxiosError<R<FailResponseTemplate>, RequestConfig<RequestConfigPayload>>) => {
+      if (sendPre && sendPre.onRejected) await sendPre.onRejected(error);
       return Promise.reject(error);
     }
   );
 
   instance.interceptors.response.use(
-    (response: AxiosResponse<R<SuccessResponseTemplate>>): any => {
+    async (response: AxiosResponse<R<SuccessResponseTemplate>>): Promise<any> => {
       if (respAft && respAft.onFulfilled) return respAft.onFulfilled(response);
       return response;
     },
-    (error: AxiosError<R<FailResponseTemplate>, RequestConfig<RequestConfigPayload>>): any => {
+    async (error: AxiosError<R<FailResponseTemplate>, RequestConfig<RequestConfigPayload>>): Promise<any> => {
       if (respAft && respAft.onRejected) return respAft.onRejected(error);
       return Promise.reject(error);
     }
