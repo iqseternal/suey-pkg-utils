@@ -14,7 +14,13 @@ export type Method = 'get' | 'GET'
 | 'unlink' | 'UNLINK';
 
 /** 预定义的请求发送方式 */
-export enum REQ_METHODS { GET = 'GET', POST = 'POST', DELETE = 'DELETE', UPDATE = 'UPDATE', PUT = 'PUT' }
+export const REQ_METHODS = {
+  GET: 'GET',
+  POST: 'POST',
+  DELETE: 'DELETE',
+  UPDATE: 'UPDATE',
+  PUT: 'PUT'
+} as const;
 
 /** 扩展机制, 当项目中需要配置指定请求发送 Token, 加密, 时间戳时使用 */
 export type RequestConfig<T, D = {}> = AxiosRequestConfig<D> & {

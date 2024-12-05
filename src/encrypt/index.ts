@@ -1,101 +1,115 @@
+import * as tsCrypto from 'crypto-ts';
 
-// aes 对称加密
-import * as crypto from 'crypto-ts';
+import * as tsMd5 from 'ts-md5';
+import type * as TsMd5Type from 'ts-md5';
 
-// md5 单向散列加密
-import { Md5 } from 'ts-md5';
-
-// rsa 非对称加密
-import type { RSAKey } from 'jsrsasign';
+import type TsRsaType from 'jsrsasign';
 import rsa from 'jsrsasign';
 
 /**
- * 进行一个加密操作, 将指定的字符串进行加密, 并返回加密结果
- * @param value 需要加密的对象或者字符串
- * @param encryptKey
- * @returns 返回加密之后的结果
+ * AES 相关
  */
-export const aesEncryptAlgorithm = (value: string, encryptKey: string) =>
-  crypto.AES.encrypt(value, encryptKey).toString();
+export namespace AES {
 
-/**
- * 进行一个解密操作, 将指定的字符串进行解密, 并返回解密结果
- * @param text 需要解密的字符串
- * @param encryptKey
- * @returns 返回解密之后的结果
- */
-export const aesDecryptAlgorithm = (text: string, encryptKey: string) =>
-  crypto.AES.decrypt(text, encryptKey).toString((crypto.enc.Utf8));
+  /**
+   * AES 加密结果
+   */
+  export type CipherParams = ReturnType<typeof AES.encrypt>;
 
-/** 定义的默认 AES 加密的key值 */
-export const AES_DEFAULT_KEY = 'crypto-ts';
+  /**
+   * word 字面量
+   */
+  export type WordArray = Exclude<Parameters<typeof AES.encrypt>[0], string>;
 
-/**
- * 返回 AES 加密之后的字符串结果, 加密对象会被先JSON.stringify 转化为字符串进行加密
- * @param value 需要加密的对象
- * @param key 加密的key
- * @returns 对象被加密之后的结果
- */
-export const aesEncrypt = <T>(value: T, key?: string) =>
-  aesEncryptAlgorithm(JSON.stringify(value), key ?? AES_DEFAULT_KEY);
+  /**
+   * 加密配置
+   */
+  export type BufferedBlockAlgorithmConfig = Parameters<typeof AES.encrypt>[2];
 
-/**
- * 返回 AES 解密之后的结果, 返回的结果不固定
- * @param {string} text 解密的字符串
- * @param {string} key 解密的key值
- * @return 返回解密之后的结果
- */
-export const aesDecrypt = <T>(text: string, key?: string): T => {
-  const str = aesDecryptAlgorithm(text, key ?? AES_DEFAULT_KEY);
-  try { return JSON.parse(str) as T; }
-  catch { return str as unknown as T; }
+  export const { enc, AES, SHA256, lib, algo, pad } = tsCrypto;
+
+  /**
+   * AES 加密算法
+   */
+  export const aesEncryptAlgorithm = AES.encrypt;
+
+  /**
+   * AES 解密算法
+   */
+  export const aesDecryptAlgorithm = AES.decrypt;
+
+  /**
+   * 预设默认加密字面量
+   */
+  export const AES_DEFAULT_KEY = `crypto-ts` as string;
+
+  /**
+   * aes 加密
+   */
+  export const aesEncrypt = <Data extends (string | WordArray)>(data: Data, key: string | WordArray = AES_DEFAULT_KEY, config?: BufferedBlockAlgorithmConfig): CipherParams => aesEncryptAlgorithm(data, key, config);
+
+  /**
+   * aes 解密
+   */
+  export const aesDecrypt = <Data extends (string | CipherParams)>(data: Data, key: string | WordArray = AES_DEFAULT_KEY, config?: BufferedBlockAlgorithmConfig): WordArray => aesDecryptAlgorithm(data, key, config);
 }
 
 /**
- * 使用 MD5 加密, 该操作是不可逆的
- * @param args 需要加密的字符串, 调用的时候可以使用逗号分隔, 会将其加密到一起
- * @returns 返回加密之后的结果
+ * Md5 相关
  */
-export const md5Encrypt = (...args: string[]) => {
-  const md5 = new Md5();
-  args.forEach(str => md5.appendStr(str));
-  return md5.end()?.toString();
-}
+export namespace Md5 {
+  export type HashingResponse = TsMd5Type.HashingResponse;
 
-interface RsaKeyOptions {
-  /** 创建 RSA key的时候, 创建多少字节的, 默认为 512 字节 */
-  bytes?: number;
-}
+  export const { Md5, Md5FileHasher, ParallelHasher } = tsMd5;
 
-/**
- * 初始化一个 RSA 的公钥和密钥
- * @param options 创建选项
- * @returns [公钥, 私钥]
- */
-export const rsaGetKey = (options?: RsaKeyOptions) => {
-  const rsaKeyPair = rsa.KEYUTIL.generateKeypair('RSA', options?.bytes ?? 512);
-  const pubKey = rsa.KEYUTIL.getPEM(rsaKeyPair.pubKeyObj);
-  const prvKey = rsa.KEYUTIL.getPEM(rsaKeyPair.prvKeyObj, 'PKCS8PRV');
-  return [pubKey, prvKey] as const;
+  /**
+   * md5 加密
+   */
+  export const md5 = Md5;
+
+  export const { KEYUTIL, KJUR, RSAKey } = rsa;
+
+  export type RSAPrivateKey = rsa.RSAPrivateKey;
+
+  export type PublicRawRSAKeyHexResult = rsa.PublicRawRSAKeyHexResult;
 }
 
 /**
- * 使用 RSA 加密, 使用该加密之前需要先生成加密和解密密钥
- * @param {string} text 需要进行加密的字符串
- * @param {string} publicKey 公钥
- * @returns 返回加密之后的结果
+ * RSA 相关
  */
-export const rsaEncryptAlgorithm = (text: string, publicKey: string): string =>
-  rsa.KJUR.crypto.Cipher.encrypt(text, rsa.KEYUTIL.getKey(publicKey) as RSAKey, 'RSA') as string;
+export namespace RSA {
+  export interface RsaKeyOptions {
+    /**
+     * 创建 RSA key的时候, 创建多少字节的
+     *
+     * @default 512
+     */
+    bytes?: number;
+  }
 
-/**
- * 使用 RSA 解密, 使用该解密之前需要先生成加密和解密密钥
- * @param {string} text 需要进行解密的字符串
- * @param {string} privateKey 私钥
- * @returns 返回解密之后的结果
- */
-export const rsaDecryptAlgorithm = (text: string, privateKey: string): string =>
-  rsa.KJUR.crypto.Cipher.decrypt(text, rsa.KEYUTIL.getKey(privateKey) as RSAKey, 'RSA') as string;
+  /**
+   * 初始化一个 RSA 的公钥和密钥
+   * @returns [公钥, 私钥]
+   */
+  export const rsaGetKey = (options?: RsaKeyOptions) => {
+    const rsaKeyPair = rsa.KEYUTIL.generateKeypair('RSA', options?.bytes ?? 512);
+    const pubKey = rsa.KEYUTIL.getPEM(rsaKeyPair.pubKeyObj, 'PKCS5PRV');
+    const prvKey = rsa.KEYUTIL.getPEM(rsaKeyPair.prvKeyObj, 'PKCS8PRV');
+    return [pubKey, prvKey] as const;
+  }
 
+  /**
+   * 使用 RSA 加密, 使用该加密之前需要先生成加密和解密密钥
+   */
+  export const rsaEncryptAlgorithm = (text: string, publicKey: string): string => {
+    return rsa.KJUR.crypto.Cipher.encrypt(text, rsa.KEYUTIL.getKey(publicKey) as TsRsaType.RSAKey, 'RSA') as string;
+  }
 
+  /**
+   * 使用 RSA 解密, 使用该解密之前需要先生成加密和解密密钥
+   */
+  export const rsaDecryptAlgorithm = (text: string, privateKey: string): string => {
+    return rsa.KJUR.crypto.Cipher.decrypt(text, rsa.KEYUTIL.getKey(privateKey) as TsRsaType.RSAKey, 'RSA') as string;
+  }
+}
 
