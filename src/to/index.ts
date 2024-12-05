@@ -1,4 +1,4 @@
-import { Types } from '../types';
+import type { RPromiseLike, PromiseResolvedType, PromiseCatchCallback, PromiseCatchReason, IsAny } from '../types';
 
 
 /**
@@ -13,7 +13,7 @@ import { Types } from '../types';
  * @param fn
  * @returns
  */
-export const asynced = <Fn extends (...args: any[]) => Types.RPromiseLike<any>>(fn: (...args: Parameters<Fn>) => any): (...args: Parameters<Fn>) => ReturnType<Fn> => fn;
+export const asynced = <Fn extends (...args: any[]) => RPromiseLike<any>>(fn: (...args: Parameters<Fn>) => any): (...args: Parameters<Fn>) => ReturnType<Fn> => fn;
 
 /**
  * @example
@@ -56,9 +56,9 @@ export const asynced = <Fn extends (...args: any[]) => Types.RPromiseLike<any>>(
  */
 export async function toNil<
   Pr extends Promise<unknown>,
-  SuccessResponse extends Types.PromiseResolvedType<Pr> = Types.PromiseResolvedType<Pr>,
-  ErrorResponseSample extends Types.PromiseCatchReason<Pr> = Types.PromiseCatchReason<Pr>,
-  ErrorResponse = Types.IsAny<ErrorResponseSample, Error, ErrorResponseSample>
+  SuccessResponse extends PromiseResolvedType<Pr> = PromiseResolvedType<Pr>,
+  ErrorResponseSample extends PromiseCatchReason<Pr> = PromiseCatchReason<Pr>,
+  ErrorResponse = IsAny<ErrorResponseSample, Error, ErrorResponseSample>
 >(
   promise: Pr
 ): Promise<[undefined, SuccessResponse] | [ErrorResponse, undefined]> {

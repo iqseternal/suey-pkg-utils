@@ -1,3 +1,6 @@
 
+export type * from './definition';
 
-export * as Types from './expose';
+export type * from './calculate';
+
+export * from './typeAssistant';
