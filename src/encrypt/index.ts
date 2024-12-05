@@ -27,6 +27,7 @@ export namespace AES {
   export type BufferedBlockAlgorithmConfig = Parameters<typeof AES.encrypt>[2];
 
   export const { enc, AES, SHA256, lib, algo, pad } = tsCrypto;
+  export const aes = AES;
 
   /**
    * AES 加密算法

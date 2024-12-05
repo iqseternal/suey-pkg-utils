@@ -4,7 +4,7 @@ import type { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from 'axio
 
 import { REQ_METHODS } from './declare';
 import type { RequestConfig, Interceptors, R, Method } from './declare';
-import type { RPromiseLike } from '../types';
+import type { Types } from '../types';
 
 /** 最终发送请求的函数体类型 */
 export type RequestFunction<
@@ -14,7 +14,7 @@ export type RequestFunction<
 > = <
   SuccessResponse = {},
   FailResponse = {}
->(payload?: RequestConfig<RequestConfigPayload>) => RPromiseLike<R<SuccessResponseTemplate, SuccessResponse>, R<FailResponseTemplate, FailResponse>>;
+>(payload?: RequestConfig<RequestConfigPayload>) => Types.RPromiseLike<R<SuccessResponseTemplate, SuccessResponse>, R<FailResponseTemplate, FailResponse>>;
 
 /**
  * 采用柯里化思想，将请求封装出去
@@ -112,5 +112,5 @@ export const createApiRequest = <RequestConfigPayload, SuccessResponseTemplate =
     apiGet: createApi(REQ_METHODS.GET),
     /** POST请求 */
     apiPost: createApi(REQ_METHODS.POST)
-  }
+  } as const;
 }

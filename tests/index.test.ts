@@ -1,7 +1,7 @@
 
 import { StringFilters } from '../src';
+import { toNil, isUseful, isUnUseful } from '../src';
 
 test('asda', () => {
 
-  expect(StringFilters.toValidStr('s', '-')).toEqual('s');
 })

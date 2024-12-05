@@ -1,5 +1,5 @@
+import { Types } from '../types';
 
-import type { IsAny, PromiseCatchReason, PromiseResolvedType, RPromiseLike } from '../types';
 
 /**
  * 创建一个 RPromiseLike 函数
@@ -13,13 +13,13 @@ import type { IsAny, PromiseCatchReason, PromiseResolvedType, RPromiseLike } fro
  * @param fn
  * @returns
  */
-export const asynced = <Fn extends (...args: any[]) => RPromiseLike<any>>(fn: (...args: Parameters<Fn>) => any): (...args: Parameters<Fn>) => ReturnType<Fn> => fn;
+export const asynced = <Fn extends (...args: any[]) => Types.RPromiseLike<any>>(fn: (...args: Parameters<Fn>) => any): (...args: Parameters<Fn>) => ReturnType<Fn> => fn;
 
 /**
  * @example
  * const p = new Promise(....);
  *
- * const [err, data] = await toPicket(p);
+ * const [err, data] = await toNil(p);
  * if (err) return; // 处理错误
  *
  * const { list } = data; // 正常执行
@@ -54,11 +54,11 @@ export const asynced = <Fn extends (...args: any[]) => RPromiseLike<any>>(fn: (.
  * 于是采用了 Go 的哨兵处理机制
  * @returns
  */
-export async function toPicket<
+export async function toNil<
   Pr extends Promise<unknown>,
-  SuccessResponse extends PromiseResolvedType<Pr> = PromiseResolvedType<Pr>,
-  ErrorResponseSample extends PromiseCatchReason<Pr> = PromiseCatchReason<Pr>,
-  ErrorResponse = IsAny<ErrorResponseSample, Error, ErrorResponseSample>
+  SuccessResponse extends Types.PromiseResolvedType<Pr> = Types.PromiseResolvedType<Pr>,
+  ErrorResponseSample extends Types.PromiseCatchReason<Pr> = Types.PromiseCatchReason<Pr>,
+  ErrorResponse = Types.IsAny<ErrorResponseSample, Error, ErrorResponseSample>
 >(
   promise: Pr
 ): Promise<[undefined, SuccessResponse] | [ErrorResponse, undefined]> {
@@ -74,4 +74,3 @@ export async function toPicket<
       return [err, void 0] as [ErrorResponse, undefined];
     });
 }
-
