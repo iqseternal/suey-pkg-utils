@@ -94,23 +94,20 @@ export declare const rsaEncryptAlgorithm: (text: string, publicKey: string) => s
 // 使用 RSA 解密, 使用该解密之前需要先生成加密和解密密钥
 export declare const rsaDecryptAlgorithm: (text: string, privateKey: string) => string;
 
-export type IsType = (target: unknown) => boolean;
-export declare const isBoolean: IsType;
-export declare const isObject: IsType;
-export declare const isFunction: IsType;
-export declare const isString: IsType;
-export declare const isNull: IsType;
-export declare const isUndefined: IsType;
-export declare const isDate: IsType;
-export declare const isDef: <T>(target: T) => boolean;
-export declare const isUnDef: <T>(target: T) => boolean;
-export declare const isPromise: (target: any | never) => boolean;
-export declare const isDecimal: (str: string) => boolean;
-export declare const isPhone: (str: string) => boolean;
-export declare const isEmail: (str: string) => boolean;
-export declare const isClass: (target: any) => boolean;
-export declare const isExternal: (path: string) => boolean;
-export declare const isArray: (arg: any) => boolean;
-export declare const isHttpUrl: (path: string) => boolean;
-export declare const isValidURL: (url: string) => boolean;
+export declare const isBoolean: IsType<boolean>;
+export declare const isNumber: IsType<number>;
+export declare const isString: IsType<string>;
+export declare const isNull: IsType<null>;
+export declare const isUndefined: IsType<undefined>;
+export declare const isDef: <T>(target: T | null | undefined) => target is NonNullable<T>;
+export declare const isUseful: <T>(target: T | null | undefined) => target is NonNullable<T>;
+export declare const isUnDef: <T>(target: T) => target is (T & null) | (T & undefined);
+export declare const isUnUseful: <T>(target: T) => target is (T & null) | (T & undefined);
+export declare const isObject: <T>(target: T) => target is Exclude<T & object, Function>;
+export declare const isRawObject: <T>(target: T) => target is Exclude<T & object, Function>;
+export declare const isFunction: IsType<Function>;
+export declare const isDate: IsType<Date>;
+export declare const isPromiseLike: <T extends Promise<K>, K>(target: T) => target is T;
+export declare const isClass: <T>(target: any) => target is new (...args: any[]) => any;
+export declare const isArray: (arg: any | any[]) => arg is any[];
 ```

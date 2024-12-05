@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "incremental": true,
+    "baseUrl": ".",
+    "rootDir": "../",
+    "resolveJsonModule": true,
+    "module": "NodeNext",
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "emitDecoratorMetadata": true,
+    "target": "ESNext",
+    "experimentalDecorators": true
+  },
+  "include": [
+    "../**/*.ts"
+  ],
+  "exclude": [
+    "src/**/*.d.ts",
+    "node_modules"
+  ]
+}

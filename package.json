@@ -1,6 +1,6 @@
 {
   "name": "@suey/pkg-utils",
-  "version": "0.0.7",
+  "version": "0.1.16",
   "author": "suey",
   "license": "ISC",
   "description": "Compatible universal functions.",
@@ -28,7 +28,10 @@
     "build": "pnpm build-commonjs && pnpm build-esm && pnpm build-types",
     "build-esm": "tsc -p . --outDir ./dist/esm --module ESNext --declaration false --removeComments true",
     "build-commonjs": "tsc -p . --outDir ./dist/commonjs --module commonjs --declaration false --removeComments true",
-    "build-types": "tsc -p . --outDir ./dist/lib --emitDeclarationOnly --removeComments false"
+    "build-types": "tsc -p . --outDir ./dist/lib --emitDeclarationOnly --removeComments false",
+    "test": "jest -o",
+    "test:all": "jest",
+    "runner": "pnpm -C ./runner dev"
   },
   "dependencies": {
     "@types/js-cookie": "^3.0.3",
@@ -43,6 +46,13 @@
     "url": "git@github.com:iqseternal/suey-pkg-utils.git"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/jsrsasign": "^10.5.14",
+    "@types/mocha": "^10.0.10",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.4",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^5.3.3"
   }
 }

@@ -1,0 +1,14 @@
+{
+  "name": "runner",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "dev": "tsnd --respawn ./index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iqseternal/suey-pkg-utils.git"
+  },
+  "private": true
+}
