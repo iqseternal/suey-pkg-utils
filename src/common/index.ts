@@ -1,4 +1,4 @@
 
-export * as Common from './expose';
+export * from './array';
 
 
