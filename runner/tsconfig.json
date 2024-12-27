@@ -11,6 +11,7 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "emitDecoratorMetadata": true,
+    "strictNullChecks": true,
     "target": "ESNext",
     "experimentalDecorators": true
   },

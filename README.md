@@ -28,13 +28,13 @@ pnpm install @suey/pkg-utils --save
 
 ### 错误处理
 
-``` tsx
+```tsx
 import { useAsyncEffect, useSetState } from 'ahooks';
 
 declare interface UserInfo {
   name: string;
 }
-declare const requestUserInfoApi: () => Promise<UserInfo>;
+declare const requestUserInfoApi: () => Promise<UserInfo>; // 错误返回 { code: -1, data: {}, message: '' }
 
 export const Home = () => {
   const [state, setState] = useSetState({
@@ -45,7 +45,7 @@ export const Home = () => {
     // 不必 try catch 捕捉异常, 可以使用 toNil 解析 Promise
     const [err, userInfo] = await toNil(requestUserInfo());
     if (err) {
-      console.error(`获取用户信息失败`);
+      console.error(`获取用户信息失败`, err.reason.message); // { reason: Error }, reason 包括 promise 拒绝响应的数据
       return;
     }
     // userInfo: UserInfo 这里可以识别 userInfo 是 UserInfo 类型
@@ -113,8 +113,6 @@ export interface RApiFailResponse extends RApiBasicResponse {
 /**
  * RApiPromiseLike, 可以通过 then, catch 获得不同的相应数据类型提示
  * 也可以通过 toNil 获取类型
- *
- * ```ts
  * declare const pr: RApiPromiseLike<number,  string>;
  * const [err, res] = await toNil(pr);
  * if (err) {
@@ -122,8 +120,6 @@ export interface RApiFailResponse extends RApiBasicResponse {
  *   return;
  * }
  * res;
- * //
- * ```
  */
 export type RApiPromiseLike<Success, Fail = {}> = ApiPromiseResultTypeBuilder<RApiSuccessResponse, RApiFailResponse, Success, Fail>;
 

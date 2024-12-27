@@ -149,6 +149,13 @@ export type PromiseThenCallback<Pr extends Promise<unknown>> = Parameters<Pr['th
 export type PromiseResolvedType<Pr extends Promise<unknown>> = Parameters<Exclude<PromiseThenCallback<Pr>, null | undefined>>[0];
 
 /**
+ * 获取一个 Promise数据 then函数回调参数 res 数组的类型
+ */
+export type PromiseArrayResolvedType<PrArr extends readonly Promise<unknown>[]> = {
+  readonly [Index in keyof PrArr]: PromiseResolvedType<PrArr[Index]>;
+};
+
+/**
  * 获取一个 Promise catch函数回调参数 res 的类型
  */
 export type PromiseCatchCallback<Pr extends Promise<unknown>> = Parameters<Pr['catch']>[0];
@@ -156,7 +163,14 @@ export type PromiseCatchCallback<Pr extends Promise<unknown>> = Parameters<Pr['c
 /**
  * 获取一个 Promise catch函数回调参数 reason 的类型
  */
-export type PromiseCatchReason<Pr extends Promise<unknown>> = Parameters<Exclude<PromiseCatchCallback<Pr>, null | undefined>>[0];
+export type PromiseCatchReasonType<Pr extends Promise<unknown>> = Parameters<Exclude<PromiseCatchCallback<Pr>, null | undefined>>[0];
+
+/**
+ * 获取一个 Promise数据 then函数回调参数 reason 数组的类型
+ */
+export type PromiseArrayCatchReasonType<PrArr extends readonly Promise<unknown>[]> = {
+  readonly [Index in keyof PrArr]: PromiseCatchReasonType<PrArr[Index]>;
+};
 
 /**
  * 判断这个类型是否是一个 never 类型, 如果是返回第一个泛型参数, 否则返回第二个

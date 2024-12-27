@@ -1,6 +1,6 @@
 import type { AxiosResponse, AxiosPromise, AxiosError } from 'axios';
 import type { AxiosInstance, AxiosRequestConfig, AxiosInterceptorManager, InternalAxiosRequestConfig, Axios } from 'axios';
-import type { RPromiseLike } from '../types/definition';
+import type { RPromiseLike } from '../types';
 
 export type Method = 'get' | 'GET'
 | 'delete' | 'DELETE'
