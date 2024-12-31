@@ -8,8 +8,6 @@ import sjsr from 'jsrsasign';
 
 import sforge from 'node-forge';
 
-import sbcrypt from 'bcryptjs';
-
 /**
  * ts-md5
  *
@@ -96,21 +94,6 @@ export const jose = sJose;
  * <p>仓库: https://www.npmjs.com/package/crypto-ts</p>
  */
 export const cryptoTs = sCryptoTs;
-
-/**
- * bcrypt
- *
- * @description
- * bcrypt的工作原理可以概括为以下几点：
- *
- * 加盐： 在对密码进行哈希计算之前，会随机生成一个盐值，并将其与密码进行组合。这个盐值是唯一的，每次哈希计算都会生成不同的盐值。
- * 迭代次数： bcrypt允许设置一个工作因子，这个因子决定了哈希函数的迭代次数。迭代次数越多，计算时间越长，破解难度也就越大。
- * 自适应性： bcrypt具有自适应性，随着硬件计算能力的提升，可以动态增加迭代次数，以保持破解难度不变
- *
- * @see
- * <p>仓库: https://www.npmjs.com/package/bcryptjs</p>
- */
-export const bcrypt = sbcrypt;
 
 /**
  * AES 加密结果

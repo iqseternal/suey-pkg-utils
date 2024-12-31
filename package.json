@@ -1,6 +1,6 @@
 {
   "name": "@suey/pkg-utils",
-  "version": "0.2.4",
+  "version": "0.2.6",
   "author": "suey",
   "license": "ISC",
   "description": "Compatible universal functions.",
@@ -34,12 +34,10 @@
     "runner": "pnpm -C ./runner dev"
   },
   "dependencies": {
-    "@types/bcryptjs": "^2.4.6",
     "@types/js-cookie": "^3.0.3",
     "@types/jsrsasign": "^10.5.15",
     "@types/node-forge": "^1.3.11",
     "axios": "^1.7.9",
-    "bcryptjs": "^2.4.3",
     "crypto-ts": "^1.0.2",
     "jose": "^5.9.6",
     "js-cookie": "^3.0.5",
