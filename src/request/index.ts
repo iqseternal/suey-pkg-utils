@@ -1,6 +1,12 @@
 import { REQ_METHODS } from './declare';
 import { createApiRequest } from './request';
 
+export type {
+  AxiosError, AxiosResponse, AxiosAdapter, AxiosInterceptorOptions,
+  AddressFamily, Axios, AxiosRequestConfig, AxiosRequestHeaders,
+  AxiosRequestTransformer, AxiosResponseTransformer, AxiosResponseHeaders
+} from 'axios';
+
 export type { Method, RequestConfig, Interceptors, ApiPromiseLikeTypeBuilder, ApiPromiseResultTypeBuilder, R } from './declare';
 export { REQ_METHODS } from './declare';
 
