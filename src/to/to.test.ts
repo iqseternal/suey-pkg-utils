@@ -128,7 +128,6 @@ describe('toNil and toNils嵌套调用', () => {
 
     const [err] = await toNil(toNil(toNil(getPromise())));
 
-
     if (err) {
       expect(err.reason).toEqual('should');
 

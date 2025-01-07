@@ -30,7 +30,6 @@ export namespace Nil {
    * toNil 解析错误返回的对象类型
    */
   export type NilRefusedReasonType<Reason extends any = any> = {
-    readonly __symbol__: typeof NilRefusedReasonSymbol;
     readonly reason: Reason;
   };
 
@@ -92,7 +91,7 @@ export namespace Nil {
     return {
       __symbol__: NilRefusedReasonSymbol,
       reason: reason
-    }
+    } as unknown as NilRefusedReasonType<T>;
   }
 }
 

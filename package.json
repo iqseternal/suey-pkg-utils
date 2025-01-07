@@ -1,6 +1,6 @@
 {
   "name": "@suey/pkg-utils",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "author": "suey",
   "license": "ISC",
   "description": "Compatible universal functions.",
