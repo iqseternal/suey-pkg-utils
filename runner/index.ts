@@ -1,22 +1,22 @@
 
-
-import { forge } from '../src';
+import type { RPromiseLike } from '../src';
+import { forge, toNil, asynced, randomRegionForInt, Nil, toNils } from '../src';
 
 ;(async () => {
-  const keypair = forge.pki.rsa.generateKeyPair({
-    bits: 1024,
-    e: 0x10001
+  const getPromise = asynced<() => RPromiseLike<void, string>>(async () => {
+    const t = randomRegionForInt(2, 2);
+    if (t > 1) return Promise.reject('should');
   });
 
-  const publicKey = keypair.publicKey;
-  const privateKey = keypair.privateKey;
+  const [p1, p2] = await toNils(getPromise(), getPromise());
 
-  console.log(forge.pki.publicKeyToRSAPublicKeyPem(publicKey));
+  const [err1, res1] = p1;
+  const [err2, res2] = p2;
 
-  const str = publicKey.encrypt('Hello');
-  console.log(str);
 
-  console.log(privateKey.decrypt(str));
+  console.log(err1, res1);
+  console.log(err2, res2);
+
 })();
 
 

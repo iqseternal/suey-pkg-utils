@@ -34,6 +34,11 @@ export namespace Nil {
     readonly reason: Reason;
   };
 
+  /**
+   * 提取目标的 Nil Reason Target
+   */
+  export type ExtractNilRefusedReasonTargetType<T extends any> = T extends NilRefusedReasonType ? T['reason'] : T;
+
   export type NilAnalysisPassedResponseType<Pass> = readonly [undefined, Pass];
   export type NilAnalysisRefusedResponseType<Reason> = readonly [NilRefusedReasonType<Reason>, undefined];
 
@@ -52,6 +57,42 @@ export namespace Nil {
       Reflect.has(target, 'reason') &&
       Reflect.getOwnPropertyDescriptor(target, '__symbol__')?.value === NilRefusedReasonSymbol
     )
+  }
+
+  /**
+   * 解析, 从 NilRefusedReason 中解析 reason 对象
+   * @param target
+   */
+  export const parseNilRefusedReasonTarget = <T>(target: T | NilRefusedReasonType): any | undefined => {
+    if (isNilRefusedReason(target)) {
+      return parseNilRefusedReasonTarget(target.reason);
+    }
+    return target;
+  }
+
+  /**
+   * 创建 nil 返回的拒绝对象
+   */
+  export const makeNilRefusedReason = <T>(error: T): NilRefusedReasonType<T> => {
+    const reason = parseNilRefusedReasonTarget(error);
+
+    const target = {
+      reason: reason
+    };
+
+    if (Reflect.defineProperty(target, '__symbol__', {
+      enumerable: false,
+      configurable: false,
+      value: NilRefusedReasonSymbol,
+      writable: false
+    })) {
+      return target as NilRefusedReasonType<T>;
+    }
+
+    return {
+      __symbol__: NilRefusedReasonSymbol,
+      reason: reason
+    }
   }
 }
 
@@ -93,28 +134,22 @@ export namespace Nil {
  *
  * 于是采用了 Go 的哨兵处理机制
  */
-export async function toNil<
+export function toNil<
   Pr extends Promise<unknown>,
   NilPassedData extends PromiseResolvedType<Pr> = PromiseResolvedType<Pr>,
-  NilRefusedReason extends PromiseCatchReasonType<Pr> = PromiseCatchReasonType<Pr>
+  NilRefusedReason extends Nil.ExtractNilRefusedReasonTargetType<PromiseCatchReasonType<Pr>> = Nil.ExtractNilRefusedReasonTargetType<PromiseCatchReasonType<Pr>>,
 >(
   promise: Pr
-): Promise<Nil.NilAnalysisResponseType<NilPassedData, NilRefusedReason>> {
+): RPromiseLike<Nil.NilAnalysisResponseType<NilPassedData, NilRefusedReason>, undefined> {
 
-  return promise
+  const pr = promise
     // 如果成功, 第一个参数 err 返回 undefined
     .then(data => [void 0, data] as Nil.NilAnalysisPassedResponseType<NilPassedData>)
     // 如果失败, 第二个参数将不存在, 失败结果将作为第一个参数返回
     // 如果失败结果也不存在, 那么会自动产生一个 Error 返回
-    .catch(err => {
-      return [
-        {
-          __symbol__: Nil.NilRefusedReasonSymbol,
-          reason: err
-        },
-        void 0
-      ] as Nil.NilAnalysisRefusedResponseType<NilRefusedReason>;
-    });
+    .catch(err => ([Nil.makeNilRefusedReason(err), void 0]));
+
+  return pr as RPromiseLike<Nil.NilAnalysisResponseType<NilPassedData, NilRefusedReason>, undefined>;
 }
 
 /**
@@ -140,21 +175,15 @@ export async function toNils<
 >(
   ...promises: Prs
 ): Promise<Array<readonly [unknown, unknown]> & {
-  readonly [K in keyof Prs]: Nil.NilAnalysisResponseType<NilPassedDataArray[K], NilRefusedReasonArray[K]>;
+  readonly [K in keyof Prs]: Nil.NilAnalysisResponseType<NilPassedDataArray[K], Nil.ExtractNilRefusedReasonTargetType<NilRefusedReasonArray[K]>>;
 }> {
-  const results = await Promise.allSettled(promises.map(promise => toNil(promise)));
+  const results = await Promise.allSettled(promises);
 
   return results.map(result => {
-    if (result.status === 'fulfilled') return result.value;
+    if (result.status === 'fulfilled') return [void 0, result.value];
 
-    return [
-      {
-        reason: void 0,
-        __symbol__: Nil.NilRefusedReasonSymbol
-      },
-      void 0
-    ] as Nil.NilAnalysisRefusedResponseType<undefined>;
+    return [Nil.makeNilRefusedReason(result.reason), void 0];
   }) as Array<readonly [unknown, unknown]> & {
-    readonly [K in keyof Prs]: Nil.NilAnalysisResponseType<NilPassedDataArray[K], NilRefusedReasonArray[K]>;
+    readonly [K in keyof Prs]: Nil.NilAnalysisResponseType<NilPassedDataArray[K], Nil.ExtractNilRefusedReasonTargetType<NilRefusedReasonArray[K]>>;
   }
 }
