@@ -28,6 +28,8 @@ pnpm install @suey/pkg-utils --save
 
 ### 错误处理
 
+使用前请配置 tsconfig.json compilerOptions.strictNullChecks
+
 ```tsx
 import { useAsyncEffect, useSetState } from 'ahooks';
 
