@@ -1,8 +1,8 @@
 {
   "name": "@suey/pkg-utils",
-  "version": "0.2.9",
+  "version": "0.2.10",
   "author": "suey",
-  "license": "ISC",
+  "license": "MIT",
   "description": "Compatible universal functions.",
   "main": "./dist/esm/index.js",
   "types": "./dist/lib/index.d.ts",

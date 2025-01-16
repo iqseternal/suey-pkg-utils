@@ -1,13 +1,5 @@
-import {
-  RPromiseLike,
-  PromiseResolvedType,
-  PromiseCatchCallback,
-  PromiseCatchReasonType,
-  IsAny,
-  PromiseArrayResolvedType,
-  PromiseArrayCatchReasonType,
-} from '../types';
-import { isObject, isRawObject } from '../fnUtils';
+import { RPromiseLike, PromiseResolvedType, PromiseCatchReasonType, PromiseArrayResolvedType, PromiseArrayCatchReasonType } from '../types';
+import { isNumber, isRawObject } from '../fnUtils';
 
 /**
  * 创建一个 RPromiseLike 函数
@@ -185,4 +177,55 @@ export async function toNils<
   }) as Array<readonly [unknown, unknown]> & {
     readonly [K in keyof Prs]: Nil.NilAnalysisResponseType<NilPassedDataArray[K], Nil.ExtractNilRefusedReasonTargetType<NilRefusedReasonArray[K]>>;
   }
+}
+
+
+export interface ToWaitPromiseOptions {
+  /**
+   * 等待的结果
+   */
+  waitResult?: 'resolve' | 'reject';
+
+  /**
+   * 等待的时间
+   * @default 2000
+   */
+  waitTime: number;
+}
+
+
+/**
+ *
+ * 创建具有等待时间的 Promise, 用于阻塞异步函数
+ *
+ */
+export function toWaitPromise(waitTime: number): RPromiseLike<void, void>;
+
+/**
+ *
+ * 创建具有等待时间的 Promise, 用于阻塞异步函数
+ *
+ */
+export function toWaitPromise(options?: ToWaitPromiseOptions): RPromiseLike<void, void>;
+
+export function toWaitPromise(op?: number | ToWaitPromiseOptions): RPromiseLike<void, void> {
+  const options: ToWaitPromiseOptions = {
+    waitTime: 2000
+  }
+
+  if (isNumber(op)) options.waitTime = op;
+  else {
+    if (op) {
+      options.waitResult = op.waitResult;
+      options.waitTime = op.waitTime;
+    }
+  }
+
+  return new Promise<void>((resolve, reject) => {
+    setTimeout(() => {
+      if (options.waitResult ==='resolve') return resolve();
+      if (options.waitResult ==='reject') return reject();
+      resolve();
+    }, options.waitTime);
+  }) as RPromiseLike<void, void>;
 }

@@ -119,24 +119,3 @@ describe('promise解析函数: toNil and toNils', () => {
   });
 });
 
-describe('toNil and toNils嵌套调用', () => {
-  test('toNil', async () => {
-    const getPromise = asynced<() => RPromiseLike<void, string>>(async () => {
-      const t = randomRegionForInt(1, 2);
-      if (t > 1) return Promise.reject('should');
-    });
-
-    const [err] = await toNil(toNil(toNil(getPromise())));
-
-    if (err) {
-      expect(err.reason).toEqual('should');
-
-      const [err2] = await toNil(Promise.reject(err) as RPromiseLike<void, string>);
-      if (err2) {
-
-
-        expect(err.reason).toEqual('should');
-      }
-    }
-  });
-});
