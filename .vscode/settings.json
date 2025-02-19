@@ -708,5 +708,6 @@
   "typescript.preferences.preferTypeOnlyAutoImports": true,
   "typescript.suggest.completeFunctionCalls": false,
   "terminal.integrated.mouseWheelZoom": false,
-  "workbench.preferredLightColorTheme": "GitHub Dark"
+  "workbench.preferredLightColorTheme": "GitHub Dark",
+  "testing.automaticallyOpenTestResults": "openOnTestFailure"
 }

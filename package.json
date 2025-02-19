@@ -1,6 +1,6 @@
 {
   "name": "@suey/pkg-utils",
-  "version": "0.2.10",
+  "version": "0.3.0",
   "author": "suey",
   "license": "MIT",
   "description": "Compatible universal functions.",

@@ -7,3 +7,4 @@ export * from './random';
 export * from './request';
 export * from './to';
 export * from './types';
+export { Ansi } from './ansi';
