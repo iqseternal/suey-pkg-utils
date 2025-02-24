@@ -82,15 +82,15 @@ export namespace Ansi {
   /**
    * 返回格式化信息
    */
-  export function format<GStrArr extends (AnsiStyle | string)[]>(...gStrArr: GStrArr): string;
-  export function format<GStrArr extends (AnsiStyle | string)[]>(...gStrArr: GStrArr): string {
+  export function format<GStrArr extends (AnsiStyle | string | number | symbol | boolean)[]>(...gStrArr: GStrArr): string;
+  export function format<GStrArr extends (AnsiStyle | string | number | symbol | boolean)[]>(...gStrArr: GStrArr): string {
     return gStrArr.map(e => String(e)).concat(normal).join('');
   }
 
   /**
    * 打印格式化信息
    */
-  export function print<GStrArr extends (AnsiStyle | string)[]>(...gStrArr: GStrArr): void {
+  export function print<GStrArr extends (AnsiStyle | string | number | symbol | boolean)[]>(...gStrArr: GStrArr): void {
     const str = format(...gStrArr);
     console.log(str);
   }
