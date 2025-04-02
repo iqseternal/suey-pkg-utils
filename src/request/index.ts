@@ -13,9 +13,9 @@ export { REQ_METHODS } from './declare';
 export type { RequestFunction } from './request';
 export { createApiRequest, default as createRequest } from './request';
 
-const { apiGet, apiPost, createApi } = createApiRequest('', {}, {});
+const { apiGet, apiPost, createApi, request } = createApiRequest('', {}, {});
 
-export { apiGet, apiPost }
+export { apiGet, apiPost, request }
 
 export const apiPut = createApi(REQ_METHODS.PUT);
 
