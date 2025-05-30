@@ -20,4 +20,3 @@ export { apiGet, apiPost, request }
 export const apiPut = createApi(REQ_METHODS.PUT);
 
 export const apiDelete = createApi(REQ_METHODS.DELETE);
-

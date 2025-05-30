@@ -19,17 +19,17 @@ export function isType<T>(type: Type): IsType<T> {
 /**
  * 返回目标是不是一个 Boolean 类型
  */
-export const isBoolean: IsType<boolean> = isType('Boolean');
+export const isBoolean = <T>(target: T | boolean): target is boolean => (typeof target === 'boolean');
 
 /**
  * 返回目标是不是一个 Number 类型
  */
-export const isNumber: IsType<number> = isType('Number');
+export const isNumber = <T>(target: T | number): target is number => (typeof target === 'number');
 
 /**
  * 返回目标是不是一个 String 类型
  */
-export const isString: IsType<string> = isType('String');
+export const isString = <T>(target: T | string): target is string => (typeof target === 'string');
 
 /**
  * 返回目标是不是一个 Null 类型
@@ -39,7 +39,7 @@ export const isNull: IsType<null> = isType('Null');
 /**
  * 返回目标是不是一个 Undefined 类型
  */
-export const isUndefined: IsType<undefined> = isType('Undefined');
+export const isUndefined = <T>(target: T | undefined): target is undefined => (typeof target === 'undefined');
 
 /**
  * 返回目标是否有意义, 即不为 Undefined, 也不为 Null

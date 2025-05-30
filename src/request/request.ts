@@ -3,18 +3,23 @@ import axios, { AxiosResponse } from 'axios';
 import type { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 
 import { REQ_METHODS } from './declare';
-import type { RequestConfig, Interceptors, R, Method } from './declare';
+import type { RequestConfig, Interceptors, R, Method, ApiPromiseResultTypeBuilder } from './declare';
 import type { RPromiseLike } from '../types';
 
-/** 最终发送请求的函数体类型 */
+/**
+ * 最终发送请求的函数体类型
+ */
 export type RequestFunction<
   RequestConfigPayload,
   SuccessResponseTemplate,
-  FailResponseTemplate
+  FailResponseTemplate,
+  CrossAttribute extends string = 'data'
 > = <
-  SuccessResponse = {},
-  FailResponse = {}
->(payload?: RequestConfig<RequestConfigPayload>) => RPromiseLike<R<SuccessResponseTemplate, SuccessResponse>, R<FailResponseTemplate, FailResponse>>;
+  SuccessResponse = unknown,
+  FailResponse = unknown
+>(
+  payload?: RequestConfig<RequestConfigPayload>
+) => ApiPromiseResultTypeBuilder<SuccessResponseTemplate, FailResponseTemplate, SuccessResponse, FailResponse, CrossAttribute>
 
 /**
  * 采用柯里化思想，将请求封装出去
@@ -26,21 +31,24 @@ export type RequestFunction<
  */
 export default function createRequest<
   RequestConfigPayload,
-  SuccessResponseTemplate = {},
-  FailResponseTemplate = {}
+  SuccessResponseTemplate = unknown,
+  FailResponseTemplate = unknown,
+  CrossAttribute extends string = 'data'
 >(
   baseURL: string,
   config?: RequestConfig<RequestConfigPayload>,
 
   sendPre?: Interceptors<RequestConfig<RequestConfigPayload>, void>,
   respAft?: Interceptors<
-    AxiosResponse<R<SuccessResponseTemplate>> | AxiosResponse<R<FailResponseTemplate>>,
-    R<SuccessResponseTemplate> | R<FailResponseTemplate> | AxiosResponse<R<SuccessResponseTemplate>> |  AxiosResponse<R<FailResponseTemplate>>
+    AxiosResponse<R<SuccessResponseTemplate, unknown, CrossAttribute>> | AxiosResponse<R<FailResponseTemplate, unknown, CrossAttribute>>,
+    AxiosResponse<R<SuccessResponseTemplate, unknown, CrossAttribute>> | AxiosResponse<R<FailResponseTemplate, unknown, CrossAttribute>>
   >
-): RequestFunction<RequestConfigPayload, SuccessResponseTemplate, FailResponseTemplate> {
+): RequestFunction<RequestConfigPayload, SuccessResponseTemplate, FailResponseTemplate, CrossAttribute> {
 
   const instance: AxiosInstance = axios.create({
-    baseURL, method: REQ_METHODS.GET, headers: {
+    baseURL,
+    method: REQ_METHODS.GET,
+    headers: {
 
     },
     timeout: 3000,
@@ -54,18 +62,18 @@ export default function createRequest<
       if (config.hConfig) delete config.hConfig;
       return config;
     },
-    async (error: AxiosError<R<FailResponseTemplate>, RequestConfig<RequestConfigPayload>>) => {
+    async (error: AxiosError<R<FailResponseTemplate, unknown, CrossAttribute>, RequestConfig<RequestConfigPayload>>) => {
       if (sendPre && sendPre.onRejected) await sendPre.onRejected(error);
       return Promise.reject(error);
     }
   );
 
   instance.interceptors.response.use(
-    async (response: AxiosResponse<R<SuccessResponseTemplate>>): Promise<any> => {
+    async (response: AxiosResponse<R<SuccessResponseTemplate, unknown, CrossAttribute>>): Promise<any> => {
       if (respAft && respAft.onFulfilled) return respAft.onFulfilled(response);
       return response;
     },
-    async (error: AxiosError<R<FailResponseTemplate>, RequestConfig<RequestConfigPayload>>): Promise<any> => {
+    async (error: AxiosError<R<FailResponseTemplate, unknown, CrossAttribute>, RequestConfig<RequestConfigPayload>>): Promise<any> => {
       if (respAft && respAft.onRejected) return respAft.onRejected(error);
       return Promise.reject(error);
     }
@@ -82,16 +90,24 @@ export default function createRequest<
  * @param respAft 响应的拦截
  * @returns 返回请求 Api
  */
-export const createApiRequest = <RequestConfigPayload, SuccessResponseTemplate = {}, FailResponseTemplate = {}>(
+export const createApiRequest = <
+  RequestConfigPayload,
+  SuccessResponseTemplate = unknown,
+  FailResponseTemplate = unknown,
+  CrossAttribute extends string = 'data'
+>(
   baseURL: string,
   config?: RequestConfig<RequestConfigPayload>,
   sendPre?: Interceptors<RequestConfig<RequestConfigPayload>, void>,
   respAft?: Interceptors<
-    AxiosResponse<R<SuccessResponseTemplate>> | AxiosResponse<R<FailResponseTemplate>>,
-    R<SuccessResponseTemplate> | R<FailResponseTemplate> | AxiosResponse<R<SuccessResponseTemplate>> |  AxiosResponse<R<FailResponseTemplate>>
+    | AxiosResponse<R<SuccessResponseTemplate, unknown, CrossAttribute>>
+    | AxiosResponse<R<FailResponseTemplate, unknown, CrossAttribute>>,
+
+    | AxiosResponse<R<SuccessResponseTemplate, unknown, CrossAttribute>>
+    | AxiosResponse<R<FailResponseTemplate, unknown, CrossAttribute>>
   >
 ) => {
-  const request = createRequest<RequestConfigPayload, SuccessResponseTemplate, FailResponseTemplate>(baseURL, config, sendPre, respAft);
+  const request = createRequest<RequestConfigPayload, SuccessResponseTemplate, FailResponseTemplate, CrossAttribute>(baseURL, config, sendPre, respAft);
 
   /**
    * 创建某个固定请求方式的Api
@@ -99,7 +115,7 @@ export const createApiRequest = <RequestConfigPayload, SuccessResponseTemplate =
    * @return 请求Api
    */
   const createApi = (method: Method) => {
-    return <SuccessResponse = {}, FailResponse = {}>(url: string, apiConfig?: RequestConfig<RequestConfigPayload>) => request<SuccessResponse, FailResponse>({
+    return <SuccessResponse = unknown, FailResponse = unknown>(url: string, apiConfig?: RequestConfig<RequestConfigPayload>) => request<SuccessResponse, FailResponse>({
       url,
       ...apiConfig,
       method
@@ -108,9 +124,13 @@ export const createApiRequest = <RequestConfigPayload, SuccessResponseTemplate =
 
   return {
     request, createApi,
-    /** GET请求 */
+    /**
+     * GET请求
+     * */
     apiGet: createApi(REQ_METHODS.GET),
-    /** POST请求 */
+    /**
+     * POST请求
+     * */
     apiPost: createApi(REQ_METHODS.POST)
   } as const;
 }

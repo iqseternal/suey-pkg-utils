@@ -196,6 +196,18 @@ export type IsNever<T, SuccessReturnType, FailReturnType> = T extends never ? Su
 export type IsAny<T, SuccessReturnType, FailReturnType> = IsNever<T, 'yes', 'no'> extends 'no' ? FailReturnType : SuccessReturnType;
 
 /**
+ * 判断这个类型是否是一个 unknown 类型, 如果是返回第一个泛型参数, 否则返回第二个
+ *
+ * @example
+ * type c = unknown;
+ * type TResult = IsUnknown<C, true, false>; // true
+ *
+ * type d = true;
+ * type TResult2 = IsUnknown<d, true, false>; // false
+ */
+export type IsUnknown<T, SuccessReturnType, FailReturnType> = unknown extends T ? (T extends unknown ? SuccessReturnType : FailReturnType) : FailReturnType;
+
+/**
  * 从一个对象类型中剔除含有 never 意义的属性名
  *
  * @example
