@@ -43,6 +43,7 @@ export default function createRequest<
     | AxiosResponse<R<SuccessResponseTemplate, unknown, CrossAttribute>>
     | AxiosResponse<R<FailResponseTemplate, unknown, CrossAttribute>>,
 
+    | AxiosResponse<R<SuccessResponseTemplate, unknown, CrossAttribute>>
     | R<FailResponseTemplate, unknown, CrossAttribute>
   >
 ): RequestFunction<RequestConfigPayload, SuccessResponseTemplate, FailResponseTemplate, CrossAttribute> {
@@ -105,6 +106,7 @@ export const createApiRequest = <
     | AxiosResponse<R<SuccessResponseTemplate, unknown, CrossAttribute>>
     | AxiosResponse<R<FailResponseTemplate, unknown, CrossAttribute>>,
 
+    | AxiosResponse<R<SuccessResponseTemplate, unknown, CrossAttribute>>
     | R<FailResponseTemplate, unknown, CrossAttribute>
   >
 ) => {
