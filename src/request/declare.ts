@@ -52,7 +52,7 @@ export type R<Template, Definition = unknown, CrossAttribute extends string = 'd
   )
 >;
 
-export type ApiPromiseLikeTypeBuilder<SuccessResponse, FailResponse = unknown> = RPromiseLike<AxiosResponse<SuccessResponse>, AxiosResponse<FailResponse>>;
+export type ApiPromiseLikeTypeBuilder<SuccessResponse, FailResponse = unknown> = RPromiseLike<AxiosResponse<SuccessResponse>, FailResponse>;
 
 export type ApiPromiseResultTypeBuilder<SuccessResponseTemplate, FailResponseTemplate, SuccessResponse, FailResponse, CrossAttribute extends string = 'data'> = ApiPromiseLikeTypeBuilder<
   R<SuccessResponseTemplate, SuccessResponse, CrossAttribute>,
