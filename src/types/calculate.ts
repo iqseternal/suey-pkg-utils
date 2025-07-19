@@ -181,7 +181,7 @@ export type PromiseArrayCatchReasonType<PrArr extends readonly Promise<unknown>[
  * type TResult = IsNever<C, true, false>; // true
  *
  */
-export type IsNever<T, SuccessReturnType, FailReturnType> = T extends never ? SuccessReturnType : FailReturnType;
+export type IsNever<T, SuccessReturnType, FailReturnType> = FailReturnType extends (T extends never ? SuccessReturnType : FailReturnType) ? FailReturnType : SuccessReturnType;
 
 /**
  * 判断这个类型是否是一个 any 类型, 如果是返回第一个泛型参数, 否则返回第二个
@@ -193,7 +193,7 @@ export type IsNever<T, SuccessReturnType, FailReturnType> = T extends never ? Su
  * type d = true;
  * type TResult2 = IsAny<d, true, false>; // false
  */
-export type IsAny<T, SuccessReturnType, FailReturnType> = IsNever<T, 'yes', 'no'> extends 'no' ? FailReturnType : SuccessReturnType;
+export type IsAny<T, SuccessReturnType, FailReturnType> = (T extends never ? 'yes' : 'no') extends 'no' ? FailReturnType : SuccessReturnType;
 
 /**
  * 判断这个类型是否是一个 unknown 类型, 如果是返回第一个泛型参数, 否则返回第二个
@@ -223,5 +223,43 @@ export type IsUnknown<T, SuccessReturnType, FailReturnType> = unknown extends T 
  *
  */
 export type ExtractNever<T> = {
-  [K in keyof T as T[K] extends never ? never : K]: T[K];
+  [K in keyof T as IsNever<T[K], never, K>]: T[K];
+}
+
+/**
+ * 从一个对象类型中剔除含有 unknown 意义的属性名
+ *
+ * @example
+ * interface A {
+ *   name: string;
+ *   age: number;
+ *
+ *   cc: unknown;
+ * }
+ *
+ * type B = ExtractUnknown<A>; // { name: string; age: number }
+ *
+ *
+ */
+export type ExtractUnknown<T> = {
+  [K in keyof T as IsUnknown<T[K], never, K>]: T[K];
+}
+
+/**
+ * 从一个对象类型中剔除含有 any 意义的属性名
+ *
+ * @example
+ * interface A {
+ *   name: string;
+ *   age: number;
+ *
+ *   cc: any;
+ * }
+ *
+ * type B = ExtractAny<A>; // { name: string; age: number }
+ *
+ *
+ */
+export type ExtractAny<T> = {
+  [K in keyof T as IsAny<T[K], never, K>]: T[K];
 }
